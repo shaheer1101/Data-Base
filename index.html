@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>root@system:~# Qazi_DB</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+
+  <!-- Particle.js -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+  <style>
+    /* Kali Linux Preloader */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0c0c0c;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: 'Ubuntu Mono', monospace;
+    }
+    
+    .preloader-terminal {
+      width: 90%;
+      max-width: 800px;
+      background: rgba(20, 20, 20, 0.9);
+      border: 1px solid #5a3676;
+      border-radius: 5px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(90, 54, 118, 0.5);
+    }
+    
+    .terminal-header {
+      display: flex;
+      margin-bottom: 15px;
+    }
+    
+    .terminal-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    
+    .terminal-btn.red { background: #ff5f56; }
+    .terminal-btn.yellow { background: #ffbd2e; }
+    .terminal-btn.green { background: #27c93f; }
+    
+    .terminal-title {
+      color: #b8b8b8;
+      font-size: 0.8rem;
+      margin-left: 10px;
+    }
+    
+    .terminal-body {
+      color: #d0d0d0;
+      font-family: 'Ubuntu Mono', monospace;
+      line-height: 1.5;
+    }
+    
+    .terminal-prompt {
+      color: #5574ff;
+    }
+    
+    .terminal-command {
+      color: #d0d0d0;
+    }
+    
+    .terminal-output {
+      color: #8a8a8a;
+    }
+    
+    .blinking-cursor {
+      animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    
+    /* Main Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: 'Ubuntu Mono', monospace;
+      background: #0c0c0c;
+      color: #d0d0d0;
+      height: 100%;
+      width: 100%;
+      overflow: auto;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, #1a0d2b 0%, #000000 100%);
+      z-index: -1;
+    }
+
+    .terminal-container {
+      background: rgba(20, 20, 20, 0.9);
+      border: 1px solid #5a3676;
+      padding: 0;
+      width: 90%;
+      max-width: 800px;
+      text-align: left;
+      position: relative;
+      z-index: 1;
+      margin: 50px auto;
+      border-radius: 5px;
+      box-shadow: 0 0 30px rgba(90, 54, 118, 0.5);
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeIn 1s forwards 0.5s;
+    }
+
+    @keyframes fadeIn {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .terminal-header-bar {
+      display: flex;
+      padding: 8px 15px;
+      background: linear-gradient(to right, #2d0b59, #5a3676);
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+    }
+    
+    .terminal-header-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    
+    .terminal-header-btn.red { background: #ff5f56; }
+    .terminal-header-btn.yellow { background: #ffbd2e; }
+    .terminal-header-btn.green { background: #27c93f; }
+    
+    .terminal-header-title {
+      color: #d0d0d0;
+      font-size: 0.9rem;
+      margin-left: 10px;
+      flex-grow: 1;
+    }
+
+    .terminal-body {
+      padding: 20px;
+    }
+
+    .prompt-line {
+      display: flex;
+      margin-bottom: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .prompt-user {
+      color: #5574ff;
+      margin-right: 5px;
+    }
+
+    .prompt-at {
+      color: #d0d0d0;
+      margin-right: 5px;
+    }
+
+    .prompt-host {
+      color: #a654ff;
+      margin-right: 5px;
+    }
+
+    .prompt-path {
+      color: #27c93f;
+      margin-right: 5px;
+    }
+
+    .prompt-symbol {
+      color: #d0d0d0;
+      margin-right: 10px;
+    }
+
+    /* Improved Search Container */
+    .search-container {
+      display: flex;
+      width: 100%;
+      margin-left: 10px;
+    }
+
+    .input-box {
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid #5a3676;
+      color: #d0d0d0;
+      font-size: 1rem;
+      width: 100%;
+      padding: 12px 15px;
+      margin: 0;
+      font-family: 'Ubuntu Mono', monospace;
+      border-radius: 3px 0 0 3px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-box:focus {
+      border-color: #a654ff;
+      box-shadow: 0 0 15px rgba(90, 54, 118, 0.7);
+      background: rgba(40, 40, 40, 0.9);
+    }
+
+    .btn-execute {
+      background: linear-gradient(to right, #5a3676, #7e4b9b);
+      border: none;
+      padding: 0 20px;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 0 3px 3px 0;
+      font-family: 'Ubuntu Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-execute:hover {
+      background: linear-gradient(to right, #7e4b9b, #a654ff);
+    }
+
+    .btn-execute i {
+      margin-right: 8px;
+    }
+
+    .btn {
+      background: linear-gradient(to right, #5a3676, #7e4b9b);
+      border: none;
+      padding: 10px 20px;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      margin: 15px 0;
+      border-radius: 3px;
+      font-family: 'Ubuntu Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      background: linear-gradient(to right, #7e4b9b, #a654ff);
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(to right, #128C7E, #25D366);
+      margin-top: 20px;
+    }
+
+    .btn-whatsapp:hover {
+      background: linear-gradient(to right, #25D366, #34B7F1);
+    }
+
+    .response-box {
+      background: rgba(30, 30, 30, 0.8);
+      padding: 15px;
+      border: 1px solid #5a3676;
+      margin: 15px 0;
+      border-radius: 3px;
+      min-height: 200px;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Ubuntu Mono', monospace;
+    }
+
+    .command-output {
+      color: #d0d0d0;
+      margin: 5px 0;
+      line-height: 1.5;
+    }
+
+    .command-success {
+      color: #27c93f;
+    }
+
+    .command-error {
+      color: #ff5f56;
+    }
+
+    .command-warning {
+      color: #ffbd2e;
+    }
+
+    .command-info {
+      color: #5574ff;
+    }
+
+    .scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, 
+        rgba(166, 84, 255, 0) 0%,
+        rgba(166, 84, 255, 0.8) 50%,
+        rgba(166, 84, 255, 0) 100%);
+      animation: scan 3s infinite;
+      box-shadow: 0 0 10px rgba(166, 84, 255, 0.5);
+    }
+
+    /* Modern Cyberpunk Data Display Styles */
+    .cyber-data {
+      background: rgba(10, 10, 20, 0.9);
+      border: 1px solid #5a3676;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 25px rgba(90, 54, 118, 0.6);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .cyber-data::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
+      animation: rainbow 3s linear infinite;
+    }
+
+    @keyframes rainbow {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    .data-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    .data-identifier {
+      color: #00ffff;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .data-status {
+      color: #00ff00;
+      display: flex;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .status-indicator.active {
+      background: #00ff00;
+      box-shadow: 0 0 8px #00ff00;
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .data-card {
+      background: rgba(20, 20, 30, 0.7);
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .data-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #5a3676, transparent);
+    }
+
+    .data-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .data-label {
+      color: #a654ff;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .data-value {
+      color: #fff;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      word-break: break-all;
+    }
+
+    .data-value.neon {
+      color: #00ffff;
+      text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    }
+
+    .data-value.glow {
+      color: #ffff00;
+      text-shadow: 0 0 5px rgba(255, 255, 0, 0.3);
+    }
+
+    .data-value.code {
+      font-family: 'Ubuntu Mono', monospace;
+      letter-spacing: 1px;
+    }
+
+    .data-value.unknown {
+      color: #ff5555;
+      font-style: italic;
+    }
+
+    .data-tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      margin-top: 5px;
+    }
+
+    .data-tag.female {
+      background: rgba(255, 105, 180, 0.2);
+      color: #ff69b4;
+      border: 1px solid #ff69b4;
+    }
+
+    .data-tag.male {
+      background: rgba(0, 191, 255, 0.2);
+      color: #00bfff;
+      border: 1px solid #00bfff;
+    }
+
+    .data-tag.zong {
+      background: rgba(0, 128, 0, 0.2);
+      color: #00ff00;
+      border: 1px solid #00ff00;
+    }
+
+    .data-tag.verified {
+      background: rgba(0, 191, 255, 0.2);
+      color: #00bfff;
+      border: 1px solid #00bfff;
+    }
+
+    .signal-strength {
+      margin-top: 15px;
+      font-size: 0.7rem;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+    }
+
+    .bar {
+      width: 8px;
+      height: 4px;
+      margin-right: 3px;
+      background: #333;
+    }
+
+    .bar.weak {
+      background: #ff5555;
+    }
+
+    .bar.medium {
+      background: #ffaa00;
+    }
+
+    .bar.strong {
+      background: #00ff00;
+    }
+
+    .data-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px dashed #333;
+      padding-top: 15px;
+    }
+
+    .timestamp {
+      color: #aaa;
+      font-size: 0.7rem;
+    }
+
+    .timestamp .glow {
+      color: #00ffff;
+    }
+
+    .data-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .data-btn {
+      background: transparent;
+      border: 1px solid;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .data-btn i {
+      font-size: 0.8rem;
+    }
+
+    .data-btn.trace {
+      border-color: #00ffff;
+      color: #00ffff;
+    }
+
+    .data-btn.trace:hover {
+      background: rgba(0, 255, 255, 0.1);
+    }
+
+    .data-btn.analyze {
+      border-color: #ff00ff;
+      color: #ff00ff;
+    }
+
+    .data-btn.analyze:hover {
+      background: rgba(255, 0, 255, 0.1);
+    }
+
+    .data-btn.export {
+      border-color: #ffff00;
+      color: #ffff00;
+    }
+
+    .data-btn.export:hover {
+      background: rgba(255, 255, 0, 0.1);
+    }
+
+    @keyframes scan {
+      0% { top: -10%; opacity: 0; }
+      50% { opacity: 1; }
+      100% { top: 110%; opacity: 0; }
+    }
+
+    @media (max-width: 768px) {
+      .terminal-container {
+        width: 95%;
+      }
+      
+      .terminal-header-title {
+        font-size: 0.8rem;
+      }
+      
+      .search-container {
+        flex-direction: column;
+      }
+      
+      .input-box {
+        border-radius: 3px;
+        margin-bottom: 5px;
+      }
+      
+      .btn-execute {
+        border-radius: 3px;
+        padding: 10px;
+        width: 100%;
+      }
+
+      .data-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .data-footer {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .data-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .data-btn {
+        flex-grow: 1;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Terminal Preloader -->
+  <div id="preloader">
+    <div class="preloader-terminal">
+      <div class="terminal-header">
+        <div class="terminal-btn red"></div>
+        <div class="terminal-btn yellow"></div>
+        <div class="terminal-btn green"></div>
+        <div class="terminal-title">root@system: ~/qazi_spoiler_db</div>
+      </div>
+      <div class="terminal-body">
+        <div><span class="terminal-prompt">root@system:~#</span> <span class="terminal-command">init system_qazi_db</span></div>
+        <div class="terminal-output">Initializing database engine...</div>
+        <div class="terminal-output">Loading encryption modules...</div>
+        <div class="terminal-output">Establishing secure connection...</div>
+        <div class="terminal-output">Verifying credentials...</div>
+        <div><span class="terminal-prompt">root@system:~#</span> <span class="terminal-command">status --ready</span><span class="blinking-cursor">_</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Particle.js Background -->
+  <div id="particles-js"></div>
+
+  <!-- Main Terminal Interface -->
+  <div class="terminal-container">
+    <div class="terminal-header-bar">
+      <div class="terminal-header-btn red"></div>
+      <div class="terminal-header-btn yellow"></div>
+      <div class="terminal-header-btn green"></div>
+      <div class="terminal-header-title">root@system: ~/qazi_db</div>
+    </div>
+    
+    <div class="terminal-body">
+      <div class="prompt-line">
+        <span class="prompt-user">root</span>
+        <span class="prompt-at">@</span>
+        <span class="prompt-host">system</span>
+        <span class="prompt-path">~/qazi_db</span>
+        <span class="prompt-symbol">#</span>
+        <span class="terminal-command">Qazi_db --start</span>
+      </div>
+      
+      <div class="command-output command-info">Qazi DB v2.0.1 (Secure Build)</div>
+      <div class="command-output">Database range: 2000-2019 | Accuracy: 100%</div>
+      <div class="command-output command-success">Ready for queries</div>
+      
+      <div class="prompt-line">
+        <span class="prompt-user">root</span>
+        <span class="prompt-at">@</span>
+        <span class="prompt-host">system</span>
+        <span class="prompt-path">~/qazi_db</span>
+        <span class="prompt-symbol">#</span>
+        <div class="search-container">
+          <input type="text" id="searchInput" class="input-box" placeholder="Enter CNIC or Phone Number" required />
+          <button id="fetchData" class="btn-execute">
+            <i class="fas fa-terminal"></i> Execute
+          </button>
+        </div>
+      </div>
+      
+      <div id="responseBox" class="response-box">
+        <div class="scan-line"></div>
+        <div class="command-output">Query results will appear here...</div>
+      </div>
+      
+      <button id="whatsappBtn" class="btn btn-whatsapp">
+        <i class="fab fa-whatsapp"></i> Want More Tools
+      </button>
+      
+      <div class="prompt-line">
+        <span class="prompt-user">root</span>
+        <span class="prompt-at">@</span>
+        <span class="prompt-host">system</span>
+        <span class="prompt-path">~/qazi_db</span>
+        <span class="prompt-symbol">#</span>
+        <span class="terminal-command" style="color: #8a8a8a;">_</span>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Terminal Preloader Animation
+  window.addEventListener('load', function() {
+    const preloader = document.getElementById('preloader');
+    const terminalBody = document.querySelector('.preloader-terminal .terminal-body');
+    
+    // Simulate terminal commands
+    const commands = [
+      { cmd: 'checksec --all', output: 'All security checks passed', delay: 800 },
+      { cmd: 'cipher --init AES-256', output: 'AES-256 encryption initialized', delay: 1000 },
+      { cmd: 'db --verify', output: 'Database integrity verified', delay: 1200 },
+      { cmd: 'net --test', output: 'Network latency: 28ms', delay: 800 },
+      { cmd: 'load --modules', output: 'Loaded 12/12 modules', delay: 1500 }
+    ];
+    
+    let currentCmd = 0;
+    
+    function simulateTyping() {
+      if (currentCmd < commands.length) {
+        const command = commands[currentCmd];
+        const prompt = document.createElement('div');
+        prompt.innerHTML = `<span class="terminal-prompt">root@system:~#</span> <span class="terminal-command">${command.cmd}</span>`;
+        
+        const output = document.createElement('div');
+        output.className = 'terminal-output';
+        output.textContent = command.output;
+        
+        terminalBody.appendChild(prompt);
+        
+        setTimeout(() => {
+          terminalBody.appendChild(output);
+          currentCmd++;
+          setTimeout(simulateTyping, 500);
+        }, command.delay);
+      } else {
+        setTimeout(() => {
+          preloader.style.opacity = '0';
+          setTimeout(() => {
+            preloader.style.display = 'none';
+          }, 500);
+        }, 1000);
+      }
+    }
+    
+    setTimeout(simulateTyping, 1500);
+  });
+
+  // Format CNIC with hyphens (XXXXX-XXXXXXX-X)
+  function formatCNICDisplay(cnic) {
+    if (!cnic) return '';
+    cnic = cnic.replace(/[-\s]/g, '');
+    if (cnic.length === 13) {
+      return cnic.substring(0, 5) + '-' + cnic.substring(5, 12) + '-' + cnic.substring(12);
+    }
+    return cnic;
+  }
+
+  // Determine gender from CNIC last digit
+  function getGenderFromCNIC(cnic) {
+    if (!cnic) return '';
+    cnic = cnic.replace(/[-\s]/g, '');
+    const lastDigit = cnic.charAt(cnic.length - 1);
+    return ['1', '3', '5', '7', '9'].includes(lastDigit) ? 'Male' : 'Female';
+  }
+
+  // Obfuscated API endpoint
+  function getApiEndpoint(input) {
+    const parts = [
+      'https://',
+      'api.',
+      'allorigins.',
+      'win/get?url=',
+      encodeURIComponent(
+        'https://' + 
+        ['fam-', 'official.', 'serv00.', 'net/', 'sim/', 'api.', 'php?num='].join('') + 
+        input
+      )
+    ];
+    return parts.join('');
+  }
+
+  const fetchButton = document.getElementById("fetchData");
+  const responseBox = document.getElementById("responseBox");
+  const whatsappBtn = document.getElementById("whatsappBtn");
+
+  // WhatsApp Channel Redirect
+  whatsappBtn.addEventListener("click", function() {
+    window.location.href = "https://whatsapp.com/channel/0029Vb6uz80J93wev2vq8O0e";
+  });
+
+  fetchButton.addEventListener("click", async () => {
+    let input = document.getElementById("searchInput").value.trim();
+    responseBox.innerHTML = '<div class="scan-line"></div><div class="command-output">Processing query...</div>';
+
+    if (!input) {
+      responseBox.innerHTML = '<div class="command-output command-error">Error: Please enter a valid CNIC or phone number</div>';
+      return;
+    }
+
+    // Check if input is a CNIC
+    if (isCNIC(input)) {
+      const formattedCNIC = formatCNIC(input);
+      responseBox.innerHTML = `
+        <div class="command-output command-info">CNIC detected: ${formatCNICDisplay(formattedCNIC)}</div>
+        <div class="command-output">Gender: ${getGenderFromCNIC(formattedCNIC)}</div>
+        <div class="command-output">Confirm verification:</div>
+        <button class="btn" onclick="handleCNIC('${formattedCNIC}')">Proceed</button>
+        <button class="btn" onclick="clearSearch()">Cancel</button>
+      `;
+      return;
+    }
+
+    input = formatPhoneNumber(input);
+    await startSearch(input);
+  });
+
+  function isCNIC(input) {
+    return /^[0-9]{13}$/.test(input) || /^[0-9]{5}[- ]?[0-9]{7}[- ]?[0-9]{1}$/.test(input);
+  }
+
+  function formatCNIC(input) {
+    return input.replace(/[-\s]/g, '');
+  }
+
+  function formatPhoneNumber(input) {
+    input = input.replace(/\s+/g, '');
+    if (input.startsWith("+92")) {
+      return "0" + input.slice(3);
+    }
+    return input;
+  }
+
+  window.handleCNIC = function(cnic) {
+    responseBox.innerHTML = '<div class="command-output">Processing CNIC: ' + formatCNICDisplay(cnic) + '</div>';
+    startSearch(cnic);
+  };
+
+  async function showLoadingMessages(messages, type = "info") {
+    responseBox.innerHTML = '<div class="scan-line"></div>';
+    for (let msg of messages) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `command-output command-${type}`;
+      messageDiv.textContent = msg;
+      responseBox.appendChild(messageDiv);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+    }
+  }
+
+  window.startSearch = async function(input) {
+    try {
+      // First check if data exists
+      const apiUrl = getApiEndpoint(input);
+      const response = await fetch(apiUrl);
+      const result = await response.json();
+      const apiData = JSON.parse(result.contents);
+
+      if (!apiData.data || apiData.data[0].Name.includes("Data Not Found")) {
+        // Show alternative messages when data is not found
+        const notFoundMessages = [
+          "Checking target in databases...",
+          "Query taking longer than expected...",
+          "Target may not be available...",
+          "Data may be too recent...",
+          "Finalizing search..."
+        ];
+        
+        await showLoadingMessages(notFoundMessages, "warning");
+        responseBox.innerHTML += '<div class="command-output command-error">Error: Data not found in database</div>';
+        return;
+      }
+
+      // If data exists, show original messages
+      const loadingMessages = [
+        "Initializing search protocol...",
+        "Bypassing security layers...",
+        "Accessing encrypted clusters...",
+        "Decrypting information...",
+        "Finalizing data acquisition..."
+      ];
+      
+      await showLoadingMessages(loadingMessages, "info");
+      
+      // Format CNIC and add gender to each record
+      window.apiData = apiData.data.map(user => {
+        return {
+          ...user,
+          FormattedCNIC: formatCNICDisplay(user.CNIC),
+          Gender: getGenderFromCNIC(user.CNIC)
+        };
+      });
+      
+      showTargetList();
+    } catch (error) {
+      responseBox.innerHTML = '<div class="command-output command-error">Error: Database connection failed</div>';
+    }
+  };
+
+  window.showTargetList = function() {
+    const apiData = window.apiData;
+    let targetList = apiData.map((user, index) =>
+      `<button class="btn" onclick="showDetails(${index})">${user.Name || "Unknown"} (${user.Gender})</button>`
+    ).join("");
+
+    responseBox.innerHTML = `
+      <div class="scan-line"></div>
+      <div class="command-output command-success">Found ${apiData.length} records:</div>
+      ${targetList}
+    `;
+  };
+
+  window.showDetails = function(index) {
+    const user = window.apiData[index];
+    const genderTagClass = user.Gender === 'Male' ? 'male' : 'female';
+
+    responseBox.innerHTML = `
+      <div class="cyber-data">
+        <div class="data-header">
+          <div class="data-identifier">RECORD #DB-${Math.random().toString(36).substr(2, 6).toUpperCase()}</div>
+          <div class="data-status">
+            <span class="status-indicator active"></span> VERIFIED
+          </div>
+        </div>
+        
+        <div class="data-grid">
+          <div class="data-card">
+            <div class="data-label">IDENTITY</div>
+            <div class="data-value neon">${user.Name || "UNKNOWN"}</div>
+            <div class="data-tag ${genderTagClass}">${user.Gender === 'Male' ? '♂ MALE' : '♀ FEMALE'}</div>
+          </div>
+          
+          <div class="data-card">
+            <div class="data-label">MOBILE</div>
+            <div class="data-value glow">${user.Mobile || "N/A"}</div>
+            <div class="data-tag zong">${user.Operator || "UNKNOWN"} NETWORK</div>
+          </div>
+          
+          <div class="data-card">
+            <div class="data-label">CNIC</div>
+            <div class="data-value code">${user.FormattedCNIC || "N/A"}</div>
+            <div class="data-tag verified">GOV-VERIFIED</div>
+          </div>
+          
+          <div class="data-card full-width">
+            <div class="data-label">GEO-LOCATION</div>
+            <div class="data-value ${user.Address ? 'glow' : 'unknown'}">${user.Address || "UNKNOWN TERRITORY"}</div>
+            <div class="signal-strength">
+              <div class="bar ${user.Address ? 'strong' : 'weak'}"></div>
+              <div class="bar ${user.Address ? 'medium' : 'weak'}"></div>
+              <div class="bar ${user.Address ? 'strong' : 'weak'}"></div>
+              <div class="bar weak"></div>
+              SIGNAL TRACE: ${user.Address ? '78%' : '23%'}
+            </div>
+          </div>
+        </div>
+        
+        <div class="data-footer">
+          <div class="timestamp">LAST UPDATED: <span class="glow">${new Date().toISOString().split('T')[0]} ${new Date().toTimeString().split(' ')[0]} UTC</span></div>
+          <div class="data-actions">
+            <button class="data-btn trace" onclick="alert('Trace initiated for ${user.Name || 'target'}')"><i class="fas fa-satellite-dish"></i> TRACE</button>
+            <button class="data-btn analyze" onclick="alert('Running deep analysis on ${user.Name || 'target'}')"><i class="fas fa-brain"></i> ANALYZE</button>
+            <button class="data-btn export" onclick="alert('Exporting data package for ${user.Name || 'target'}')"><i class="fas fa-file-export"></i> EXPORT</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn" onclick="showTargetList()" style="margin-top: 15px;">Back to Results</button>
+    `;
+  };
+
+  window.clearSearch = function() {
+    document.getElementById("searchInput").value = '';
+    responseBox.innerHTML = '<div class="scan-line"></div><div class="command-output">Ready for new query...</div>';
+  };
+
+  // Particle.js Configuration
+  particlesJS("particles-js", {
+    particles: {
+      number: { 
+        value: 80,
+        density: {
+          enable: true,
+          value_area: 800
+        }
+      },
+      color: { 
+        value: ["#5a3676", "#a654ff", "#5574ff"]
+      },
+      shape: {
+        type: "circle",
+        stroke: {
+          width: 0,
+          color: "#000000"
+        }
+      },
+      opacity: {
+        value: 0.5,
+        random: true,
+        anim: {
+          enable: true,
+          speed: 1,
+          opacity_min: 0.1,
+          sync: false
+        }
+      },
+      size: {
+        value: 3,
+        random: true,
+        anim: {
+          enable: true,
+          speed: 2,
+          size_min: 0.1,
+          sync: false
+        }
+      },
+      line_linked: {
+        enable: true,
+        distance: 150,
+        color: "#5a3676",
+        opacity: 0.2,
+        width: 1
+      },
+      move: {
+        enable: true,
+        speed: 4,
+        direction: "none",
+        random: true,
+        straight: false,
+        out_mode: "out",
+        bounce: false,
+        attract: {
+          enable: true,
+          rotateX: 600,
+          rotateY: 1200
+        }
+      }
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: {
+        onhover: { 
+          enable: true, 
+          mode: "repulse" 
+        },
+        onclick: { 
+          enable: true, 
+          mode: "push" 
+        },
+        resize: true
+      },
+      modes: {
+        repulse: {
+          distance: 100,
+          duration: 0.4
+        },
+        push: {
+          particles_nb: 4
+        }
+      }
+    },
+    retina_detect: true
+  });
+</script>
+
+</body>
+</html>
